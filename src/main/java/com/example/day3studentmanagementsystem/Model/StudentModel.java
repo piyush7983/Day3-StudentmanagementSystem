@@ -1,0 +1,23 @@
+package com.example.day3studentmanagementsystem.Model;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.lang.annotation.Documented;
+
+@Data
+@AllArgsConstructor //makes constructor of below variables
+@NoArgsConstructor  //for null values
+@Document(collection =  "student" )
+public class StudentModel {
+
+    @Id
+    private String id;
+    private String name;
+    private int age;
+    private String email;
+
+}
