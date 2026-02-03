@@ -4,7 +4,10 @@ import com.example.day3studentmanagementsystem.Model.StudentModel;
 import com.example.day3studentmanagementsystem.Repository.StudentRepository;
 import com.example.day3studentmanagementsystem.dto.StudentRequestDto;
 import com.example.day3studentmanagementsystem.dto.StudentResponseDto;
+import com.example.day3studentmanagementsystem.exception.StudentNotFound;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -36,30 +39,49 @@ public class StudentService {
 
     // Display
 
-    public List<StudentModel> getStudent(){
-        return repository.findAll();
+    public List<StudentResponseDto> getStudent() {
+        return repository.findAll()
+                .stream()
+                .map(student -> new StudentResponseDto(
+                        student.getId(),
+                        student.getName(),
+                        student.getAge(),
+                        student.getEmail()
+                ))
+                .toList();
     }
+
 
     //update
 
-    public StudentModel update(String id, StudentModel student){
-        StudentModel existing =  repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("no student found"));
-        existing.setId(student.getId());
-        existing.setName(student.getName());
-        existing.setEmail(student.getEmail());
-        existing.setAge(student.getAge());
+    public StudentResponseDto update(String id, @Valid StudentRequestDto dto) {
+        StudentModel existing = repository.findById(id)
+                .orElseThrow(() -> new StudentNotFound("Student not found"));
 
-        return repository.save(existing);
+        existing.setName(dto.getName());
+        existing.setAge(dto.getAge());
+        existing.setEmail(dto.getEmail());
 
+        StudentModel saved = repository.save(existing);
 
+        return new StudentResponseDto(
+                saved.getId(),
+                saved.getName(),
+                saved.getAge(),
+                saved.getEmail()
+        );
     }
 
+
     // delete
-    public void delete(String id){
+
+
+    public StudentResponseDto delete(String id){
         StudentModel existing =  repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("no student found"));
+                .orElseThrow(() -> new StudentNotFound("no student found"));
         repository.delete(existing);
+
+        return null;
     }
 
 }
