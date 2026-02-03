@@ -2,13 +2,15 @@ package com.example.day3studentmanagementsystem.Service;
 
 import com.example.day3studentmanagementsystem.Model.StudentModel;
 import com.example.day3studentmanagementsystem.Repository.StudentRepository;
+import com.example.day3studentmanagementsystem.dto.StudentRequestDto;
+import com.example.day3studentmanagementsystem.dto.StudentResponseDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class StudentService {
-    private StudentRepository repository;
+    private final StudentRepository repository;
 
     public StudentService(StudentRepository repository) {
         this.repository = repository;
@@ -16,8 +18,20 @@ public class StudentService {
 
     // create
 
-    public StudentModel addStudent(StudentModel student){
-        return repository.save(student);
+    public StudentResponseDto addStudent(StudentRequestDto dto ) {
+        StudentModel student = new StudentModel();
+        student.setName(dto.getName());
+        student.setAge(dto.getAge());
+        student.setEmail(dto.getEmail());
+
+        StudentModel saved = repository.save(student);
+
+        return new StudentResponseDto(
+                saved.getId(),
+                saved.getName(),
+                saved.getAge(),
+                saved.getEmail()
+        );
     }
 
     // Display
