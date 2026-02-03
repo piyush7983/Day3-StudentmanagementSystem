@@ -21,8 +21,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
     public class StudentRequestDto {
 
 
-        @Id
-        private String id;
+
 
         @NotBlank(message = "name invalid")
         private String name;

@@ -3,6 +3,9 @@ package com.example.day3studentmanagementsystem.Controller;
 import com.example.day3studentmanagementsystem.Model.StudentModel;
 import com.example.day3studentmanagementsystem.Service.StudentService;
 //import org.springframework.web.bind.annotation.GetMapping;
+import com.example.day3studentmanagementsystem.dto.StudentRequestDto;
+import com.example.day3studentmanagementsystem.dto.StudentResponseDto;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +22,7 @@ public class StudentController {
     // create function Api
 
     @PostMapping("/add_student")
-    public StudentModel addStudent(@RequestBody StudentModel student){
+    public StudentResponseDto addStudent(@Valid  @RequestBody StudentRequestDto student){
         return service.addStudent(student);
 
     }
@@ -27,18 +30,18 @@ public class StudentController {
     // Display Student
 
     @GetMapping("/students")
-    public List<StudentModel> getStudents(){
+    public List<StudentResponseDto> getStudents(){
         return service.getStudent();
     }
 
     @PutMapping("/update/{id}")
-    public StudentModel updateStudent(@PathVariable String id,@RequestBody StudentModel student){
+    public StudentResponseDto updateStudent(@PathVariable String id,  @Valid @RequestBody StudentRequestDto student){
         return service.update(id,student);
     }
 
     @DeleteMapping("delete/{id}")
-    public void delete(@PathVariable String id){
-        service.delete(id);
+    public StudentResponseDto delete(@PathVariable String id){
+        return service.delete(id);
     }
 
 
