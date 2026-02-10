@@ -4,6 +4,7 @@ import com.example.day3studentmanagementsystem.Model.UserModel;
 import com.example.day3studentmanagementsystem.Repository.userRepository;
 import com.example.day3studentmanagementsystem.Service.AuthService;
 import com.example.day3studentmanagementsystem.dto.LoginRequestDto;
+import com.example.day3studentmanagementsystem.dto.RegisterRequestDto;
 import com.example.day3studentmanagementsystem.dto.TokenResponseDto;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public TokenResponseDto register(@RequestBody UserModel user) {}
+    public TokenResponseDto register(@RequestBody RegisterRequestDto user) {
+        return service.register(user);
+    }
 
 }
