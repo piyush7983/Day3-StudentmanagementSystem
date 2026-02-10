@@ -1,0 +1,55 @@
+package com.example.day3studentmanagementsystem.Service;
+
+import com.example.day3studentmanagementsystem.Model.UserModel;
+import com.example.day3studentmanagementsystem.Repository.userRepository;
+import com.example.day3studentmanagementsystem.dto.LoginRequestDto;
+import com.example.day3studentmanagementsystem.dto.RegisterRequestDto;
+import com.example.day3studentmanagementsystem.dto.TokenResponseDto;
+import com.example.day3studentmanagementsystem.util.JwtUtil;
+import org.springframework.stereotype.Service;
+
+@Service
+public class AuthService {
+
+    private final userRepository repository;
+    private final JwtUtil jwtUtil;
+
+    public AuthService(userRepository repository, JwtUtil jwtUtil) {
+        this.repository = repository;
+        this.jwtUtil = jwtUtil;
+    }
+
+    public TokenResponseDto login(LoginRequestDto dto) {
+
+        UserModel user = repository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new RuntimeException("Invalid email"));
+
+        if (!user.getPassword().equals(dto.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        String token = jwtUtil.generateToken(user.getEmail());
+
+        return new TokenResponseDto(token);
+    }
+
+    public TokenResponseDto register(RegisterRequestDto dto) {
+
+        // Check if user already exists
+        if (repository.findByEmail(dto.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already registered");
+        }
+
+        // Create new user
+        UserModel newUser = new UserModel();
+        newUser.setEmail(dto.getEmail());
+        newUser.setPassword(dto.getPassword()); // Note: In production, hash the password!
+
+        repository.save(newUser);
+
+        // Generate token for the new user
+        String token = jwtUtil.generateToken(newUser.getEmail());
+
+        return new TokenResponseDto(token);
+    }
+}

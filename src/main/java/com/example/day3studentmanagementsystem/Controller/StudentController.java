@@ -6,6 +6,7 @@ import com.example.day3studentmanagementsystem.Service.StudentService;
 import com.example.day3studentmanagementsystem.dto.StudentRequestDto;
 import com.example.day3studentmanagementsystem.dto.StudentResponseDto;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,9 +40,16 @@ public class StudentController {
         return service.update(id,student);
     }
 
-    @DeleteMapping("delete/{id}")
-    public StudentResponseDto delete(@PathVariable String id){
-        return service.delete(id);
+    @DeleteMapping("/delete/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT) // 204
+    public void delete(@PathVariable String id){
+        service.delete(id);
+    }
+
+
+    @PatchMapping("patch/{id}")
+    public StudentResponseDto patch(@PathVariable String id,  @RequestBody StudentRequestDto student){
+        return service.patch(id,student);
     }
 
 

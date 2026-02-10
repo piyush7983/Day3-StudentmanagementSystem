@@ -76,12 +76,41 @@ public class StudentService {
     // delete
 
 
-    public StudentResponseDto delete(String id){
-        StudentModel existing =  repository.findById(id)
-                .orElseThrow(() -> new StudentNotFound("no student found"));
+    public void delete(String id){
+        StudentModel existing = repository.findById(id)
+                .orElseThrow(() -> new StudentNotFound("Student not found"));
         repository.delete(existing);
-
-        return null;
     }
+
+
+
+    public StudentResponseDto patch(String id, @Valid StudentRequestDto dto) {
+
+        StudentModel existing = repository.findById(id)
+                .orElseThrow(() -> new StudentNotFound("Student not found"));
+
+        // partial update
+        if (dto.getName() != null) {
+            existing.setName(dto.getName());
+        }
+
+        if (dto.getAge() != 0) {
+            existing.setAge(dto.getAge());
+        }
+
+        if (dto.getEmail() != null) {
+            existing.setEmail(dto.getEmail());
+        }
+
+        StudentModel saved = repository.save(existing);
+
+        return new StudentResponseDto(
+                saved.getId(),
+                saved.getName(),
+                saved.getAge(),
+                saved.getEmail()
+        );
+    }
+
 
 }
